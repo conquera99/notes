@@ -12,3 +12,14 @@ export const formatNumber = (
 	locale: string | string[] = 'en-ID',
 	options: Record<string, unknown> = { style: 'decimal' },
 ): string => new Intl.NumberFormat(locale, options).format(value);
+
+export const escapeHtml = (unsafe: string) => {
+	return unsafe
+		.replace(/(<([^>]+)>)/gi, '')
+		.replace(/&amp;/g, '&')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&quot;/g, '"')
+		.replace(/&nbsp;/g, ' ')
+		.replace(/&#039;/g, "'");
+};
