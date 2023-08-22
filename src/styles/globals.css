@@ -9,8 +9,13 @@
 
 .ck.ck-editor__editable_inline {
 	padding: 0 !important;
+	border: none !important;
 }
 
-.ck-powered-by-balloon {
-	display: none !important;
+.ck-editor__editable {
+	min-height: 500px;
+}
+
+.ck.ck-balloon-panel {
+	box-shadow: none !important;
 }
