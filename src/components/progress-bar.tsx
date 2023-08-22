@@ -1,9 +1,9 @@
 'use client';
 
-import NextNProgress from 'nextjs-progressbar';
+import { AppProgressBar } from 'next-nprogress-bar';
 
 const ProgressBar = () => {
-	return <NextNProgress />;
+	return <AppProgressBar color="#3b3b3b" options={{ showSpinner: false }} />;
 };
 
 export default ProgressBar;
