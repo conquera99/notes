@@ -11,6 +11,9 @@ dependencies:
   '@ckeditor/ckeditor5-react':
     specifier: ^6.1.0
     version: 6.1.0(@ckeditor/ckeditor5-core@39.0.1)(@ckeditor/ckeditor5-engine@39.0.1)(@ckeditor/ckeditor5-utils@39.0.1)(@ckeditor/ckeditor5-watchdog@39.0.1)(react@18.2.0)
+  '@uidotdev/usehooks':
+    specifier: ^2.1.1
+    version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   dayjs:
     specifier: ^1.11.9
     version: 1.11.9
@@ -2063,6 +2066,17 @@ packages:
       '@typescript-eslint/types': 6.4.1
       eslint-visitor-keys: 3.4.3
     dev: true
+
+  /@uidotdev/usehooks@2.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-sVJ1jXU62Edh22dREEa3mHcHnH2MUgokuzLw9guNS30ADCkdhYASNZxg2V8iB83iwY5H+jSeSxjqGaFvsRrNBQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@webassemblyjs/ast@1.11.6:
     resolution: {integrity: sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q==}
