@@ -135,7 +135,7 @@ export default function RootLayout({
 				<link
 					rel="mask-icon"
 					href="/icons/safari-pinned-tab.svg"
-					color="#5bbad5"
+					color="#ffffff"
 				/>
 				<link rel="shortcut icon" href="/favicon.ico" />
 
