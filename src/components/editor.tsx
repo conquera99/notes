@@ -143,7 +143,7 @@ export default function Editor() {
 					<button
 						onClick={onSave}
 						disabled={loading}
-						className="rounded-full bg-red-500 text-white px-4 py-1 flex items-center"
+						className="rounded-full bg-red-500 text-white px-6 py-1 flex items-center"
 					>
 						{loading && <Loading className="text-sm" />} Save
 					</button>

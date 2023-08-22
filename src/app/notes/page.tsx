@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 import Editor from '@/components/editor';
-import StorageInfo from '@/components/storage-info';
+import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
 	title: 'Create Notes',
@@ -12,7 +12,7 @@ export default function Detail() {
 	return (
 		<main className="min-h-screen">
 			<Editor />
-			<StorageInfo />
+			<Footer />
 		</main>
 	);
 }
