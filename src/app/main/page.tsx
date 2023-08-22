@@ -9,7 +9,7 @@ export default function Main() {
 		<main className="min-h-screen">
 			<Header>
 				<Link
-					href="/create"
+					href="/notes"
 					className="rounded-full bg-red-500 text-white px-4 py-1"
 				>
 					Create

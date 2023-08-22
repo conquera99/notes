@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 	description: 'Create notes',
 };
 
-export default function Detail({ params }: { params: { id: string } }) {
+export default function Detail() {
 	return (
 		<main className="min-h-screen">
-			<Editor id={params.id} />
+			<Editor />
 			<StorageInfo />
 		</main>
 	);

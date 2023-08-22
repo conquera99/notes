@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -18,17 +18,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function Editor({
-	id = 'create',
-}: {
-	id?: number | string | undefined;
-}) {
+export default function Editor() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const editorRef = useRef<{ CKEditor: any; BalloonEditor: BalloonEditor }>();
+
+	const id = searchParams.get('id');
 
 	// get data
 	useLiveQuery(async () => {
-		if (id !== 'create') {
+		if (id) {
 			const note = await db.notes.get(Number(id));
 
 			setTitle(note?.title || '');
@@ -61,7 +60,7 @@ export default function Editor({
 		setLoading(true);
 
 		try {
-			if (id !== 'create') {
+			if (id) {
 				console.log('delete-data');
 				db.notes.delete(Number(id)).then((response) => {
 					console.log('data deleted', response);
@@ -83,7 +82,7 @@ export default function Editor({
 		try {
 			const currentTimestamp = dayjs().format(DATETIME_FORMAT);
 
-			if (id === 'create') {
+			if (!id) {
 				console.log('create-data');
 				db.notes
 					.add({
@@ -96,7 +95,7 @@ export default function Editor({
 						console.log('data created', response);
 						toast.success('Notes saved!');
 					});
-			} else if (id) {
+			} else {
 				console.log('update-data', id);
 				db.notes
 					.update(Number(id), {
