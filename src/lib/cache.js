@@ -179,6 +179,9 @@ module.exports = [
 				maxAgeSeconds: 60 * 60, // 1 hour
 			},
 			networkTimeoutSeconds: 10,
+			cacheableResponse: {
+				statuses: [200, 302],
+			},
 		},
 	},
 ];

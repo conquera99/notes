@@ -9,7 +9,9 @@ const withPWA = nextPwa({
 	scope: '/',
 	sw: 'notes-worker.js',
 	skipWaiting: false,
+	cacheOnFrontEndNav: true,
 	runtimeCaching: runtimeCaching,
+	buildExcludes: [/app-build-manifest\.json$/],
 });
 
 /** @type {import('next').NextConfig} */
