@@ -6,7 +6,7 @@ import { db } from '@/lib/db';
 import Card from '@/components/card';
 
 export function Notes() {
-	const notes = useLiveQuery(() => db.notes.toArray());
+	const notes = useLiveQuery(() => db.notes.reverse().sortBy('updatedAt'));
 
 	if (notes?.length === 0) {
 		return (
@@ -23,6 +23,7 @@ export function Notes() {
 					id={note.id}
 					key={note.id}
 					title={note.title}
+					content={note.content}
 					datetime={note.updatedAt}
 				/>
 			))}
