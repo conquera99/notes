@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 
 interface HeaderProps {
-	children: ReactNode;
+	children?: ReactNode;
 }
 
 export default function Header({ children }: HeaderProps) {
