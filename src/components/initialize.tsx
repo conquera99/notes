@@ -41,9 +41,10 @@ export default function InitializeDB() {
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
-			'serviceWorker' in navigator &&
-			window.workbox !== undefined
+			'serviceWorker' in navigator
+			// window.workbox !== undefined
 		) {
+			console.log('sw-init');
 			const wb = new Workbox('/notes-worker.js');
 			// add event listeners to handle any of PWA lifecycle event
 			// https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-window.Workbox#events
