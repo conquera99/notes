@@ -1,7 +1,0 @@
-{
-  "extends": [
-    "prettier",
-    "next",
-    "next/core-web-vitals"
-  ]
-}

@@ -12,23 +12,31 @@
 	"dependencies": {
 		"@ckeditor/ckeditor5-build-balloon": "^39.0.1",
 		"@ckeditor/ckeditor5-react": "^6.1.0",
-		"@types/node": "20.5.1",
-		"@types/react": "18.2.20",
-		"@types/react-dom": "18.2.7",
-		"autoprefixer": "10.4.15",
 		"dayjs": "^1.11.9",
 		"dexie": "^3.2.4",
 		"dexie-react-hooks": "^1.1.6",
-		"eslint": "8.47.0",
-		"eslint-config-next": "13.4.19",
 		"next": "13.4.19",
-		"postcss": "8.4.28",
+		"next-pwa": "^5.6.0",
+		"nextjs-progressbar": "^0.0.16",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"tailwindcss": "3.3.3",
-		"typescript": "5.1.6"
+		"typescript": "5.1.6",
+		"workbox-window": "^7.0.0"
 	},
 	"devDependencies": {
+		"@types/next-pwa": "^5.6.4",
+		"@types/node": "20.5.1",
+		"@types/react": "18.2.20",
+		"@types/react-dom": "18.2.7",
+		"@types/workbox-sw": "^4.3.3",
+		"@types/workbox-window": "^5.0.0",
+		"autoprefixer": "10.4.15",
+		"eslint": "8.47.0",
+		"eslint-config-next": "13.4.19",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.0",
+		"postcss": "8.4.28",
 		"prettier": "^3.0.2"
 	}
 }
