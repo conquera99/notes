@@ -35,3 +35,9 @@ export const editorConfig = {
 		],
 	},
 };
+
+export const appConfig = {
+	name: 'Notes.',
+	desc: 'offline notes for mobile and web',
+	url: 'https://notes.nunukan.net',
+};
