@@ -1,11 +1,12 @@
 import Dexie, { Table } from 'dexie';
 
-const VERSION = 1;
+const VERSION = 2;
 
 export interface Notes {
 	id?: number;
 	title: string;
 	content: string;
+	font: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -19,7 +20,7 @@ export class DB extends Dexie {
 		super('notes');
 
 		this.version(VERSION).stores({
-			notes: '++id, title, content, createdAt, updatedAt', // Primary key and indexed props
+			notes: '++id, title, content, font, createdAt, updatedAt', // Primary key and indexed props
 		});
 	}
 }

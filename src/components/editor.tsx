@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ToastContainer, toast } from 'react-toastify';
+import { Long_Cang } from 'next/font/google';
+import Select, { SingleValue } from 'react-select';
 
 import type BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
@@ -17,6 +19,19 @@ import { editorConfig } from '@/lib/constant';
 import 'react-toastify/dist/ReactToastify.css';
 
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+const LongChangFont = Long_Cang({
+	subsets: ['latin'],
+	weight: ['400'],
+});
+
+const OptionsValue = {
+	'': { label: 'Nothing Font', value: '' },
+	[LongChangFont.className]: {
+		label: 'Chinese Font',
+		value: LongChangFont.className,
+	},
+};
 
 export default function Editor() {
 	const router = useRouter();
@@ -32,6 +47,9 @@ export default function Editor() {
 
 			setTitle(note?.title || '');
 			setData(note?.content || '');
+			setFont(note?.font || '');
+
+			console.log(note);
 
 			return note;
 		}
@@ -43,12 +61,16 @@ export default function Editor() {
 	const [data, setData] = useState('');
 	const [title, setTitle] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [font, setFont] = useState('');
 
 	const { CKEditor, BalloonEditor } = editorRef.current || {};
 
 	const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(e.target.value);
 	};
+
+	const onFontChange = (val: SingleValue<{ value: string; label: string }>) =>
+		setFont(val?.value || '');
 
 	const onTextEditorChange = (_event: any, editor: any) => {
 		const data = editor.getData();
@@ -82,12 +104,15 @@ export default function Editor() {
 		try {
 			const currentTimestamp = dayjs().format(DATETIME_FORMAT);
 
+			console.log('font', font);
+
 			if (!id) {
 				console.log('create-data');
 				db.notes
 					.add({
 						title: title,
 						content: data,
+						font: font,
 						createdAt: currentTimestamp,
 						updatedAt: currentTimestamp,
 					})
@@ -101,6 +126,7 @@ export default function Editor() {
 					.update(Number(id), {
 						title,
 						content: data,
+						font: font,
 						updatedAt: currentTimestamp,
 					})
 					.then((response) => {
@@ -130,6 +156,17 @@ export default function Editor() {
 		<div>
 			<Header>
 				<div className="flex items-center">
+					<Select
+						options={[
+							{ value: '', label: 'Nothing Font' },
+							{
+								value: LongChangFont.className,
+								label: 'Chinese Font',
+							},
+						]}
+						value={OptionsValue[font]}
+						onChange={onFontChange}
+					/>
 					{id !== 'create' && (
 						<button
 							onClick={onRemove}
@@ -150,7 +187,7 @@ export default function Editor() {
 				</div>
 			</Header>
 			{editorLoaded ? (
-				<div className="px-4">
+				<div className={`px-4 ${font}`}>
 					<input
 						value={title}
 						onChange={onTitleChange}
