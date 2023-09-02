@@ -14,14 +14,16 @@ export default function Footer() {
 
 	useEffect(() => {
 		if (typeof navigator !== 'undefined') {
-			navigator.storage.estimate().then((estimateSize) => {
-				setEstimateStorage(estimateSize);
-			});
+			if (typeof navigator.storage.estimate !== 'undefined') {
+				navigator.storage.estimate().then((estimateSize) => {
+					setEstimateStorage(estimateSize);
+				});
+			}
 		}
 	}, []);
 
 	return (
-		<div className="text-sm flex items-center justify-between fixed bottom-0 px-4 left-0 right-0 text-center py-1">
+		<div className="text-sm flex items-center justify-between fixed bottom-0 px-4 left-0 right-0 text-center py-1 backdrop-blur-sm bg-white/30 border-t-slate-100 border-t">
 			<div>
 				Usage&nbsp;
 				{formatNumber(
