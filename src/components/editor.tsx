@@ -192,7 +192,7 @@ export default function Editor() {
 						value={title}
 						onChange={onTitleChange}
 						placeholder="Write your title"
-						className="py-2 focus:outline-none text-xl"
+						className="py-2 focus:outline-none text-xl w-full"
 					/>
 					<CKEditor
 						editor={BalloonEditor}
