@@ -17,7 +17,7 @@ export default function Main() {
 					<GitHub />
 				</a>
 			</Header>
-			<div className="px-4">
+			<div className="px-4 pt-4">
 				<Notes />
 			</div>
 
