@@ -144,6 +144,7 @@ export default function Editor() {
 					.then((response) => {
 						console.log('data created', response);
 						toast.success('Notes saved!');
+						router.replace(`/notes?id=${response}`);
 					});
 			} else {
 				console.log('update-data', id);
