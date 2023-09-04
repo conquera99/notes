@@ -5,8 +5,13 @@ import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ToastContainer, toast } from 'react-toastify';
-import { Long_Cang } from 'next/font/google';
 import Select, { SingleValue } from 'react-select';
+import {
+	Long_Cang,
+	Kaushan_Script,
+	Anonymous_Pro,
+	Raleway,
+} from 'next/font/google';
 
 import type BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
@@ -24,12 +29,36 @@ const LongChangFont = Long_Cang({
 	subsets: ['latin'],
 	weight: ['400'],
 });
+const KaushanScriptFont = Kaushan_Script({
+	subsets: ['latin'],
+	weight: ['400'],
+});
+const AnonymousProFont = Anonymous_Pro({
+	subsets: ['latin'],
+	weight: ['400'],
+});
+const RalewayFont = Raleway({
+	subsets: ['latin'],
+	weight: ['400'],
+});
 
 const OptionsValue = {
 	'': { label: 'Nothing Font', value: '' },
 	[LongChangFont.className]: {
 		label: 'Chinese Font',
 		value: LongChangFont.className,
+	},
+	[KaushanScriptFont.className]: {
+		label: 'Kaushan Font',
+		value: KaushanScriptFont.className,
+	},
+	[AnonymousProFont.className]: {
+		label: 'Anonymous Font',
+		value: AnonymousProFont.className,
+	},
+	[RalewayFont.className]: {
+		label: 'Raleway Font',
+		value: RalewayFont.className,
 	},
 };
 
@@ -48,8 +77,6 @@ export default function Editor() {
 			setTitle(note?.title || '');
 			setData(note?.content || '');
 			setFont(note?.font || '');
-
-			console.log(note);
 
 			return note;
 		}
@@ -103,8 +130,6 @@ export default function Editor() {
 
 		try {
 			const currentTimestamp = dayjs().format(DATETIME_FORMAT);
-
-			console.log('font', font);
 
 			if (!id) {
 				console.log('create-data');
@@ -162,6 +187,18 @@ export default function Editor() {
 							{
 								value: LongChangFont.className,
 								label: 'Chinese Font',
+							},
+							{
+								value: KaushanScriptFont.className,
+								label: 'Kaushan Font',
+							},
+							{
+								value: AnonymousProFont.className,
+								label: 'Anonymous Font',
+							},
+							{
+								value: RalewayFont.className,
+								label: 'Raleway Font',
 							},
 						]}
 						value={OptionsValue[font]}
