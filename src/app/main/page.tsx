@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-import Footer from '@/components/footer';
-import Header from '@/components/header';
-import { Notes } from '@/components/notes';
-import { GitHub } from '@/components/icons';
+import Footer from '@/components/display/footer';
+import Header from '@/components/display/header';
+import { Notes } from '@/components/display/notes';
+import { GithubIcons } from '@/components/display/github-icons';
 
 export default function Main() {
 	return (
@@ -14,7 +14,7 @@ export default function Main() {
 					target="_blank"
 					rel="noreferrer noopener"
 				>
-					<GitHub />
+					<GithubIcons />
 				</a>
 			</Header>
 			<div className="px-4 pt-4">

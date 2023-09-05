@@ -15,7 +15,7 @@ import {
 
 import type BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
-import Header from '@/components/header';
+import Header from '@/components/display/header';
 import { Loading, Trash } from '@/components/icons';
 
 import { db } from '@/lib/db';

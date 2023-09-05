@@ -3,7 +3,9 @@ import localFont from 'next/font/local';
 
 import '@/styles/globals.css';
 
-import ProgressBar from '@/components/progress-bar';
+import ProgressBar from '@/components/display/progress-bar';
+import { ThemeProvider } from '@/components/theme-provider';
+
 import { appConfig } from '@/lib/constant';
 
 const nothingFont = localFont({ src: '../styles/font/nothing.ttf' });
@@ -19,7 +21,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<meta name="application-name" content={appConfig.name} />
 				<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -329,8 +331,15 @@ export default function RootLayout({
 				/>
 			</head>
 			<body className={nothingFont.className}>
-				<ProgressBar />
-				<main className="min-h-screen">{children}</main>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="light"
+					enableSystem={false}
+					disableTransitionOnChange
+				>
+					<ProgressBar />
+					<main className="min-h-screen">{children}</main>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

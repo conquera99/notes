@@ -3,7 +3,7 @@
 import { AppProgressBar } from 'next-nprogress-bar';
 
 const ProgressBar = () => {
-	return <AppProgressBar color="#3b3b3b" options={{ showSpinner: false }} />;
+	return <AppProgressBar color="#ef4444" options={{ showSpinner: false }} />;
 };
 
 export default ProgressBar;

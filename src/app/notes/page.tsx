@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 import Editor from '@/components/editor';
-import Footer from '@/components/footer';
+import Footer from '@/components/display/footer';
 
 export const metadata: Metadata = {
 	title: 'Create Notes',

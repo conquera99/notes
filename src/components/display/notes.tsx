@@ -3,7 +3,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 
 import { db } from '@/lib/db';
-import Card from '@/components/card';
+
+import Card from '@/components/display/card';
 
 export function Notes() {
 	const notes = useLiveQuery(() => db.notes.reverse().sortBy('updatedAt'));

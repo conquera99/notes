@@ -1,6 +1,7 @@
-import { escapeHtml } from '@/lib/helper';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+
+import { escapeHtml } from '@/lib/helper';
 
 interface CardProps {
 	id?: number;
@@ -13,7 +14,7 @@ export default function Card({ id, title, content, datetime }: CardProps) {
 	return (
 		<Link
 			href={`/notes?id=${id || 'create'}`}
-			className="h-40 border-gray-600 border-dotted border rounded-lg p-4 col-span-6 lg:col-span-3 xl:col-span-2 cursor-pointer hover:bg-slate-100 transition-all"
+			className="h-40 border-gray-600 border-dotted border rounded-lg p-4 col-span-6 lg:col-span-3 xl:col-span-2 cursor-pointer hover:bg-slate-100 transition-all dark:hover:bg-gray-900"
 		>
 			<div className="flex flex-col justify-between h-full">
 				<div>
