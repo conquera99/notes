@@ -11,6 +11,7 @@ import {
 	Kaushan_Script,
 	Anonymous_Pro,
 	Raleway,
+	Noto_Sans_SC,
 } from 'next/font/google';
 
 import type BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
@@ -41,6 +42,10 @@ const RalewayFont = Raleway({
 	subsets: ['latin'],
 	weight: ['400'],
 });
+const NotoSansSCFont = Noto_Sans_SC({
+	subsets: ['latin'],
+	weight: ['400'],
+});
 
 const OptionsValue = {
 	'': { label: 'Nothing Font', value: '' },
@@ -59,6 +64,10 @@ const OptionsValue = {
 	[RalewayFont.className]: {
 		label: 'Raleway Font',
 		value: RalewayFont.className,
+	},
+	[NotoSansSCFont.className]: {
+		label: 'Noto Sans Font',
+		value: NotoSansSCFont.className,
 	},
 };
 
@@ -114,7 +123,7 @@ export default function Editor() {
 				db.notes.delete(Number(id)).then((response) => {
 					console.log('data deleted', response);
 					toast.success('Notes deleted!');
-					router.push('/main');
+					router.push('/');
 				});
 			}
 		} catch (error) {
@@ -201,9 +210,22 @@ export default function Editor() {
 								value: RalewayFont.className,
 								label: 'Raleway Font',
 							},
+							{
+								value: NotoSansSCFont.className,
+								label: 'Noto Sans Font',
+							},
 						]}
+						className="input-select"
 						value={OptionsValue[font]}
 						onChange={onFontChange}
+						styles={{
+							option(base) {
+								return {
+									...base,
+									color: '#333333',
+								};
+							},
+						}}
 					/>
 					{id !== 'create' && (
 						<button

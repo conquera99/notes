@@ -6,12 +6,16 @@ import { db } from '@/lib/db';
 
 import Card from '@/components/display/card';
 
-export function Notes() {
-	const notes = useLiveQuery(() => db.notes.reverse().sortBy('updatedAt'));
+export function Notes({ loading }: { loading?: boolean }) {
+	const notes = useLiveQuery(() =>
+		loading ? [] : db.notes.reverse().sortBy('updatedAt'),
+	);
+
+	if (loading === true) return <div>Loading...</div>;
 
 	if (notes?.length === 0) {
 		return (
-			<div className="h-56 bg-slate-50 px-4 flex items-center rounded-md text-center">
+			<div className="h-56 bg-slate-50 dark:text-gray-600 px-4 flex items-center rounded-md text-center">
 				No notes data available!
 			</div>
 		);

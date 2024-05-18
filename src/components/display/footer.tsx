@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useTheme } from 'next-themes';
 
@@ -10,7 +10,7 @@ import { formatNumber } from '@/lib/helper';
 
 const DIVIDE = 1_048_576;
 
-export default function Footer() {
+export default function Footer({ status }: { status?: ReactNode }) {
 	const { setTheme, theme } = useTheme();
 	const size = useWindowSize();
 
@@ -54,7 +54,7 @@ export default function Footer() {
 				{formatNumber(
 					Number(((estimateStorage?.quota || 0) / DIVIDE).toFixed(0)),
 				)}
-				&nbsp;MB
+				&nbsp;MB; &nbsp;Status: {status ?? '-'}
 			</div>
 			<div className="flex gap-6 items-center">
 				{size.width}x{size.height}

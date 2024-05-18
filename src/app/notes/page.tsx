@@ -12,7 +12,7 @@ export default function Detail() {
 	return (
 		<main className="min-h-screen">
 			<Editor />
-			<Footer />
+			<Footer status="Ready" />
 		</main>
 	);
 }

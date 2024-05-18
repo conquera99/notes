@@ -1,14 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Workbox } from 'workbox-window';
 
 import { db } from '@/lib/db';
 
-export default function InitializeDB() {
-	const router = useRouter();
-
+export default function InitializeDB({
+	onReady,
+}: {
+	onReady?: (ready: boolean, status: string) => void;
+}) {
 	const [isDBReady, setIsDBReady] = useState<boolean>(false);
 	const [status, setStatus] = useState('initialize...');
 
@@ -16,25 +17,26 @@ export default function InitializeDB() {
 		if (db.isOpen() === false) {
 			db.open()
 				.then(() => {
-					setStatus('initialized success');
+					setStatus('Ready');
 					setIsDBReady(true);
 				})
 				.catch((error) => {
 					console.log('error', error);
-					setStatus('initialized error');
+					setStatus('Error');
 				});
 		}
 
 		db.on('ready', () => {
 			console.log('db is ready');
+			setStatus('Ready');
 		});
 	}, []);
 
 	useEffect(() => {
 		if (isDBReady === true) {
-			router.push('/main');
+			if (onReady) onReady(true, status);
 		}
-	}, [isDBReady, router]);
+	}, [isDBReady, onReady, status]);
 
 	// This hook only run once in browser after the component is rendered for the first time.
 	// It has same effect as the old componentDidMount lifecycle callback.
@@ -117,5 +119,5 @@ export default function InitializeDB() {
 		}
 	}, []);
 
-	return <div className="my-2 text-sm">{status}</div>;
+	return <span className="my-2 text-sm">{status}</span>;
 }
