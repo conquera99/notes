@@ -13,9 +13,11 @@ export const metadata: Metadata = {
 
 export default function Detail() {
 	return (
-		<main className="min-h-screen">
+		<main className="min-h-screen pb-20">
 			<Suspense fallback={<div></div>}>
-				<Editor />
+				<div className="w-full">
+					<Editor />
+				</div>
 			</Suspense>
 			<Footer status="Ready" />
 		</main>

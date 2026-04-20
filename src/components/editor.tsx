@@ -180,9 +180,9 @@ export default function Editor() {
 	};
 
 	return (
-		<div>
+		<div className="pb-4">
 			<Header>
-				<div className="flex items-center">
+				<div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
 					<Select
 						options={[
 							{ value: '', label: 'Nothing Font' },
@@ -207,14 +207,79 @@ export default function Editor() {
 								label: 'Noto Sans Font',
 							},
 						]}
-						className="input-select"
+						className="min-w-0 flex-1 text-sm sm:min-w-40 sm:flex-none"
 						value={OptionsValue[font]}
 						onChange={onFontChange}
 						styles={{
-							option(base) {
+							control(base, state) {
 								return {
 									...base,
-									color: '#333333',
+									backgroundColor: 'var(--surface)',
+									borderColor: state.isFocused
+										? 'color-mix(in oklab, var(--accent) 45%, var(--surface-border))'
+										: 'var(--surface-border)',
+									boxShadow: 'none',
+								};
+							},
+							option(base, state) {
+								return {
+									...base,
+									color: 'var(--foreground)',
+									backgroundColor: state.isSelected
+										? 'color-mix(in oklab, var(--accent) 20%, var(--surface))'
+										: state.isFocused
+											? 'color-mix(in oklab, var(--accent) 12%, var(--surface))'
+											: 'var(--surface)',
+									cursor: 'pointer',
+								};
+							},
+							menu(base) {
+								return {
+									...base,
+									backgroundColor: 'var(--surface)',
+									border: '1px solid var(--surface-border)',
+								};
+							},
+							singleValue(base) {
+								return {
+									...base,
+									color: 'var(--foreground)',
+								};
+							},
+							input(base) {
+								return {
+									...base,
+									color: 'var(--foreground)',
+								};
+							},
+							placeholder(base) {
+								return {
+									...base,
+									color: 'var(--muted)',
+								};
+							},
+							indicatorSeparator(base) {
+								return {
+									...base,
+									backgroundColor: 'var(--surface-border)',
+								};
+							},
+							dropdownIndicator(base) {
+								return {
+									...base,
+									color: 'var(--muted)',
+								};
+							},
+							clearIndicator(base) {
+								return {
+									...base,
+									color: 'var(--muted)',
+								};
+							},
+							noOptionsMessage(base) {
+								return {
+									...base,
+									color: 'var(--muted)',
 								};
 							},
 						}}
@@ -223,7 +288,7 @@ export default function Editor() {
 						<button
 							onClick={onRemove}
 							disabled={loading}
-							className="rounded-full text-red-500 px-4 flex items-center"
+							className="flex items-center rounded-full border border-red-300/80 px-3 py-1 text-red-500 transition hover:bg-red-50 sm:px-4 dark:border-red-400/40 dark:hover:bg-red-500/10"
 						>
 							{loading && <Loading className="text-sm" />}&nbsp;
 							<Trash />
@@ -232,18 +297,18 @@ export default function Editor() {
 					<button
 						onClick={onSave}
 						disabled={loading}
-						className="rounded-full bg-red-500 text-white px-6 py-1 flex items-center"
+						className="flex items-center rounded-full bg-(--accent) px-4 py-1.5 font-medium text-(--accent-contrast) transition hover:opacity-90 sm:px-6"
 					>
 						{loading && <Loading className="text-sm" />} Save
 					</button>
 				</div>
 			</Header>
-			<div className={`px-4 ${font}`}>
+			<div className={`mx-3 mt-4 rounded-2xl border border-(--surface-border) bg-(--surface) p-3 sm:mx-4 sm:p-6 ${font}`}>
 				<input
 					value={title}
 					onChange={onTitleChange}
 					placeholder="Write your title"
-					className="py-2 focus:outline-none text-xl w-full"
+					className="w-full border-b border-(--surface-border) bg-transparent py-3 text-xl font-semibold focus:outline-none sm:text-2xl"
 				/>
 				<CKEditorClient
 					data={data}

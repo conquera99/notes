@@ -14,16 +14,18 @@ export default function Card({ id, title, content, datetime }: CardProps) {
 	return (
 		<Link
 			href={`/notes?id=${id || 'create'}`}
-			className="h-40 border-gray-600 border-dotted border rounded-lg p-4 col-span-6 lg:col-span-3 xl:col-span-2 cursor-pointer hover:bg-slate-100 transition-all dark:hover:bg-gray-900"
+			className="group flex h-44 cursor-pointer flex-col justify-between rounded-2xl border border-(--surface-border) bg-(--surface) p-4 transition-all hover:-translate-y-0.5 hover:border-red-300/70 dark:hover:border-red-400/50"
 		>
-			<div className="flex flex-col justify-between h-full">
+			<div className="flex h-full flex-col justify-between">
 				<div>
-					<h2 className="text-xl font-bold w-full text-ellipsis overflow-hidden whitespace-nowrap mb-1">
+					<h2 className="mb-2 w-full overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold">
 						{title || 'No Title'}
 					</h2>
-					<p>{escapeHtml(content).substring(0, 80)}</p>
+					<p className="line-clamp-3 text-sm text-(--muted)">
+						{escapeHtml(content).substring(0, 120)}
+					</p>
 				</div>
-				<small className="text-xs">
+				<small className="text-xs text-(--muted)">
 					{dayjs(datetime).format('DD MMM YYYY HH:mm')}
 				</small>
 			</div>

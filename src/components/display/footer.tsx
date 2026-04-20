@@ -18,8 +18,6 @@ export default function Footer({ status }: { status?: ReactNode }) {
 
 	const switchTheme = (_theme: string) => {
 		setTheme(_theme);
-
-		console.log(_theme);
 	};
 
 	useEffect(() => {
@@ -33,8 +31,9 @@ export default function Footer({ status }: { status?: ReactNode }) {
 	}, []);
 
 	return (
-		<div className="text-sm flex items-center justify-between fixed bottom-0 px-4 left-0 right-0 text-center py-1 backdrop-blur-sm bg-white/30 border-t-slate-100 border-t">
-			<div>
+		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-(--surface-border) bg-(--surface)/95 text-sm backdrop-blur-md">
+			<div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+				<div className="w-full text-xs leading-5 text-(--muted) sm:text-sm">
 				Usage&nbsp;
 				{formatNumber(
 					Number(((estimateStorage?.usage || 0) / DIVIDE).toFixed(0)),
@@ -43,17 +42,22 @@ export default function Footer({ status }: { status?: ReactNode }) {
 				{formatNumber(
 					Number(((estimateStorage?.quota || 0) / DIVIDE).toFixed(0)),
 				)}
-				&nbsp;MB; &nbsp;Status: {status ?? '-'}
-			</div>
-			<div className="flex gap-6 items-center">
-				{size.width}x{size.height}
-				<span className="cursor-pointer">
-					{theme === 'light' ? (
-						<Moon onClick={switchTheme} />
-					) : (
-						<Sun onClick={switchTheme} />
-					)}
-				</span>
+				&nbsp;MB; &nbsp;Status: <span className="text-(--foreground)">{status ?? '-'}</span>
+				</div>
+				<div className="flex w-full items-center justify-between gap-3 text-xs text-(--muted) sm:w-auto sm:justify-end sm:text-sm">
+					<span className="hidden sm:inline">{size.width}x{size.height}</span>
+					<button
+						type="button"
+						onClick={() => switchTheme(theme === 'light' ? 'dark' : 'light')}
+						className="cursor-pointer rounded-full border border-(--surface-border) p-2 text-(--foreground) transition hover:bg-black/5 dark:hover:bg-white/10"
+					>
+						{theme === 'light' ? (
+							<Moon />
+						) : (
+							<Sun />
+						)}
+					</button>
+				</div>
 			</div>
 		</div>
 	);
