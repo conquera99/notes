@@ -54,6 +54,12 @@ function SignInContent() {
 	return (
 		<main className="mx-auto flex min-h-screen w-full max-w-md items-center px-4 py-10">
 			<div className="w-full rounded-2xl border border-(--surface-border) bg-(--surface) p-6">
+				<Link
+					href="/"
+					className="mb-4 inline-flex rounded-lg border border-(--surface-border) px-3 py-1.5 text-sm text-(--muted) transition hover:text-(--foreground)"
+				>
+					Back to Home / Notes
+				</Link>
 				<h1 className="mb-2 text-2xl font-semibold">Welcome back</h1>
 				<p className="mb-6 text-sm text-(--muted)">Sign in to continue to your notes.</p>
 
