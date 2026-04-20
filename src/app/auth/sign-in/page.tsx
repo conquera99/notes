@@ -2,10 +2,18 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, Suspense, useMemo, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
 export default function SignInPage() {
+	return (
+		<Suspense fallback={null}>
+			<SignInContent />
+		</Suspense>
+	);
+}
+
+function SignInContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
