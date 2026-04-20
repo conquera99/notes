@@ -3,39 +3,71 @@
 import { useEffect, useState } from 'react';
 
 import { db } from '@/lib/db';
+import { syncLocalNotesIfPossible } from '@/lib/note-sync';
 
 export default function InitializeDB({
-	onReady,
+	onReadyAction,
 }: {
-	onReady?: (ready: boolean, status: string) => void;
+	onReadyAction?: (ready: boolean, status: string) => void;
 }) {
 	const [isDBReady, setIsDBReady] = useState<boolean>(false);
 	const [status, setStatus] = useState('initialize...');
 
+	const publishStatus = (nextStatus: string) => {
+		setStatus(nextStatus);
+		window.dispatchEvent(
+			new CustomEvent('notes-sync-status', {
+				detail: { status: nextStatus },
+			}),
+		);
+	};
+
 	useEffect(() => {
+		const runSync = async () => {
+			try {
+				publishStatus('Syncing...');
+				const syncStatus = await syncLocalNotesIfPossible();
+				publishStatus(syncStatus);
+			} catch {
+				publishStatus('Sync failed');
+			}
+		};
+
 		if (db.isOpen() === false) {
 			db.open()
 				.then(() => {
-					setStatus('Ready');
+					publishStatus('Ready');
 					setIsDBReady(true);
+					void runSync();
 				})
 				.catch((error) => {
 					console.log('error', error);
-					setStatus('Error');
+					publishStatus('Error');
 				});
 		}
 
 		db.on('ready', () => {
 			console.log('db is ready');
-			setStatus('Ready');
+			publishStatus('Ready');
+			void runSync();
 		});
+
+		const onOnline = () => {
+			void runSync();
+		};
+
+		window.addEventListener('online', onOnline);
+
+		return () => {
+			window.removeEventListener('online', onOnline);
+		};
 	}, []);
 
 	useEffect(() => {
 		if (isDBReady === true) {
-			if (onReady) onReady(true, status);
+			if (onReadyAction) onReadyAction(true, status);
 		}
-	}, [isDBReady, onReady, status]);
+	}, [isDBReady, onReadyAction, status]);
 
 	// This hook only run once in browser after the component is rendered for the first time.
 	// It has same effect as the old componentDidMount lifecycle callback.

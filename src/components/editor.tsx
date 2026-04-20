@@ -16,6 +16,7 @@ import {
 } from 'next/font/google';
 
 import Header from '@/components/display/header';
+import SyncBadge from '@/components/display/sync-badge';
 import { Loading, Trash } from '@/components/icons';
 
 import { db } from '@/lib/db';
@@ -183,6 +184,7 @@ export default function Editor() {
 		<div className="pb-4">
 			<Header>
 				<div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+					<SyncBadge />
 					<Select
 						options={[
 							{ value: '', label: 'Nothing Font' },

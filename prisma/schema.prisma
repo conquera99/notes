@@ -14,6 +14,7 @@ model User {
 	emailVerified DateTime? @map("email_verified")
 	image         String?
 	passwordHash  String?   @map("password_hash")
+	notes         Notes[]
 	accounts      Account[]
 	sessions      Session[]
 
@@ -58,4 +59,20 @@ model VerificationToken {
 
 	@@unique([identifier, token])
 	@@map("verification_tokens")
+}
+
+model Notes {
+	id        Int      @id @default(autoincrement())
+	userId    String   @map("user_id")
+	title     String
+	content   String   @db.LongText
+	font      String
+	createdAt DateTime @default(now()) @map("created_at")
+	updatedAt DateTime @updatedAt @map("updated_at")
+
+	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@index([userId, updatedAt])
+
+	@@map("notes")
 }

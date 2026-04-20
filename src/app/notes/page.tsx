@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 
 import Editor from '@/components/editor';
 import Footer from '@/components/display/footer';
+import InitializeDB from '@/components/initialize';
 
 import '@/lib/env';
 
@@ -19,7 +20,7 @@ export default function Detail() {
 					<Editor />
 				</div>
 			</Suspense>
-			<Footer status="Ready" />
+			<Footer status={<InitializeDB />} />
 		</main>
 	);
 }
