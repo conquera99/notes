@@ -1,16 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-	/* Your default theme */
-	--background: white;
-	--foreground: black;
+	--background: #f5f7fb;
+	--foreground: #111827;
+	--muted: #6b7280;
+	--surface: rgba(255, 255, 255, 0.86);
+	--surface-border: rgba(15, 23, 42, 0.08);
+	--accent: #ef4444;
+	--accent-contrast: #ffffff;
 }
 
-[data-theme='dark'] {
-	--background: black;
-	--foreground: white;
+.dark {
+	--background: #0b1020;
+	--foreground: #eef2ff;
+	--muted: #94a3b8;
+	--surface: rgba(15, 23, 42, 0.72);
+	--surface-border: rgba(148, 163, 184, 0.2);
+	--accent: #fb7185;
+	--accent-contrast: #111827;
+}
+
+html,
+body {
+	background:
+		radial-gradient(circle at 15% 20%, rgba(239, 68, 68, 0.1), transparent 35%),
+		radial-gradient(circle at 85% 0%, rgba(59, 130, 246, 0.1), transparent 40%),
+		var(--background);
+	color: var(--foreground);
+	min-height: 100%;
+}
+
+body {
+	transition: background-color 180ms ease, color 180ms ease;
+}
+
+::selection {
+	background: color-mix(in oklab, var(--accent) 25%, transparent);
 }
 
 .ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
@@ -21,24 +48,34 @@
 .ck.ck-editor__editable_inline {
 	padding: 0 !important;
 	border: none !important;
+	color: var(--foreground) !important;
+	background: transparent !important;
+}
+
+.ck.ck-editor__editable:focus-visible {
+	outline: none !important;
 }
 
 .ck-editor__editable {
-	min-height: calc(100vh - 140px);
+	min-height: calc(100vh - 170px);
 }
 
 .ck.ck-balloon-panel {
 	box-shadow: none !important;
 }
 
+.ck-content {
+	font-family: unset;
+}
+
 p {
-	@apply text-xl;
+	@apply text-base leading-relaxed;
 }
 
 h1 {
-	@apply text-6xl;
+	@apply text-4xl font-bold tracking-tight;
 }
 
 h2 {
-	@apply text-4xl;
+	@apply text-2xl font-semibold tracking-tight;
 }

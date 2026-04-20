@@ -15,14 +15,14 @@ export function Notes({ loading }: { loading?: boolean }) {
 
 	if (notes?.length === 0) {
 		return (
-			<div className="h-56 bg-slate-50 dark:text-gray-600 px-4 flex items-center rounded-md text-center">
+			<div className="flex h-56 items-center justify-center rounded-2xl border border-dashed border-[color:var(--surface-border)] bg-[var(--surface)] px-4 text-center text-[color:var(--muted)]">
 				No notes data available!
 			</div>
 		);
 	}
 
 	return (
-		<div className="grid grid-cols-6 gap-4">
+		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{notes?.map((note) => (
 				<Card
 					id={note.id}

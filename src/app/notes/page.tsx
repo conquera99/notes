@@ -1,8 +1,11 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import Editor from '@/components/editor';
 import Footer from '@/components/display/footer';
-import { Suspense } from 'react';
+import InitializeDB from '@/components/initialize';
+
+import '@/lib/env';
 
 export const metadata: Metadata = {
 	title: 'Create Notes',
@@ -11,11 +14,13 @@ export const metadata: Metadata = {
 
 export default function Detail() {
 	return (
-		<main className="min-h-screen">
+		<main className="min-h-screen pb-20">
 			<Suspense fallback={<div></div>}>
-				<Editor />
+				<div className="w-full">
+					<Editor />
+				</div>
 			</Suspense>
-			<Footer status="Ready" />
+			<Footer status={<InitializeDB />} />
 		</main>
 	);
 }
