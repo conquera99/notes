@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import Editor from '@/components/editor';
 import Footer from '@/components/display/footer';
-import { Suspense } from 'react';
+
+import '@/lib/env';
 
 export const metadata: Metadata = {
 	title: 'Create Notes',

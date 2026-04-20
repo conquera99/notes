@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
+import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,8 +15,6 @@ import {
 	Noto_Sans_SC,
 } from 'next/font/google';
 
-import type BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
-
 import Header from '@/components/display/header';
 import { Loading, Trash } from '@/components/icons';
 
@@ -23,6 +22,11 @@ import { db } from '@/lib/db';
 import { editorConfig } from '@/lib/constant';
 
 import 'react-toastify/dist/ReactToastify.css';
+
+const CKEditorClient = dynamic(
+	() => import('./ckeditor-client'),
+	{ ssr: false },
+);
 
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -74,9 +78,13 @@ const OptionsValue = {
 export default function Editor() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const editorRef = useRef<{ CKEditor: any; BalloonEditor: BalloonEditor }>();
 
 	const id = searchParams.get('id');
+
+	const [data, setData] = useState('');
+	const [title, setTitle] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [font, setFont] = useState('');
 
 	// get data
 	useLiveQuery(async () => {
@@ -92,14 +100,6 @@ export default function Editor() {
 
 		return null;
 	}, [id]);
-
-	const [editorLoaded, setEditorLoaded] = useState(false);
-	const [data, setData] = useState('');
-	const [title, setTitle] = useState('');
-	const [loading, setLoading] = useState(false);
-	const [font, setFont] = useState('');
-
-	const { CKEditor, BalloonEditor } = editorRef.current || {};
 
 	const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(e.target.value);
@@ -179,14 +179,6 @@ export default function Editor() {
 		setLoading(false);
 	};
 
-	useEffect(() => {
-		editorRef.current = {
-			CKEditor: require('@ckeditor/ckeditor5-react').CKEditor,
-			BalloonEditor: require('@ckeditor/ckeditor5-build-balloon'),
-		};
-		setEditorLoaded(true);
-	}, []);
-
 	return (
 		<div>
 			<Header>
@@ -246,26 +238,19 @@ export default function Editor() {
 					</button>
 				</div>
 			</Header>
-			{editorLoaded ? (
-				<div className={`px-4 ${font}`}>
-					<input
-						value={title}
-						onChange={onTitleChange}
-						placeholder="Write your title"
-						className="py-2 focus:outline-none text-xl w-full"
-					/>
-					<CKEditor
-						editor={BalloonEditor}
-						data={data}
-						config={editorConfig}
-						onChange={onTextEditorChange}
-					/>
-				</div>
-			) : (
-				<div className="text-sm px-4">
-					<Loading className="text-sm" />
-				</div>
-			)}
+			<div className={`px-4 ${font}`}>
+				<input
+					value={title}
+					onChange={onTitleChange}
+					placeholder="Write your title"
+					className="py-2 focus:outline-none text-xl w-full"
+				/>
+				<CKEditorClient
+					data={data}
+					config={editorConfig}
+					onChange={onTextEditorChange}
+				/>
+			</div>
 			<ToastContainer position="top-center" />
 		</div>
 	);
