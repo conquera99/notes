@@ -14,8 +14,6 @@ export default function Footer({ status }: { status?: ReactNode }) {
 	const { setTheme, theme } = useTheme();
 	const size = useWindowSize();
 
-	const [mounted, setMounted] = useState(false);
-
 	const [estimateStorage, setEstimateStorage] = useState<StorageEstimate>({});
 
 	const switchTheme = (_theme: string) => {
@@ -32,16 +30,7 @@ export default function Footer({ status }: { status?: ReactNode }) {
 				});
 			}
 		}
-
-		setMounted(true);
 	}, []);
-
-	if (!mounted)
-		return (
-			<div className="text-sm h-[29px] flex items-center justify-between fixed bottom-0 px-4 left-0 right-0 text-center py-1 backdrop-blur-sm bg-white/30 border-t-slate-100 border-t">
-				&nbsp;
-			</div>
-		);
 
 	return (
 		<div className="text-sm flex items-center justify-between fixed bottom-0 px-4 left-0 right-0 text-center py-1 backdrop-blur-sm bg-white/30 border-t-slate-100 border-t">
