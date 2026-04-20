@@ -10,6 +10,7 @@
 		"prettier": "prettier --write ./src/**/*.{ts,js,tsx,json}"
 	},
 	"dependencies": {
+		"@bprogress/next": "^3.2.12",
 		"@ckeditor/ckeditor5-react": "^11.1.2",
 		"@next/env": "^16.2.4",
 		"@uidotdev/usehooks": "^2.4.1",
@@ -18,7 +19,6 @@
 		"dexie": "^4.4.2",
 		"dexie-react-hooks": "^4.4.0",
 		"next": "16.2.4",
-		"next-nprogress-bar": "^2.4.7",
 		"next-themes": "^0.4.6",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",

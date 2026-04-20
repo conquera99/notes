@@ -31,6 +31,13 @@ export default function CkeditorClient({
 			data={data}
 			config={{
 				...config,
+				ui: {
+					poweredBy: {
+						position: 'inside',
+						side: 'right',
+						label: 'This is',
+					},
+				},
 				licenseKey: 'GPL',
 				plugins: [
 					Essentials,

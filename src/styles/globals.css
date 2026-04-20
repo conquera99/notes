@@ -23,12 +23,20 @@
 	border: none !important;
 }
 
+.ck.ck-editor__editable:focus-visible {
+	outline: none !important;
+}
+
 .ck-editor__editable {
-	min-height: calc(100vh - 140px);
+	min-height: calc(100vh - 170px);
 }
 
 .ck.ck-balloon-panel {
 	box-shadow: none !important;
+}
+
+.ck-content {
+	font-family: unset;
 }
 
 p {
