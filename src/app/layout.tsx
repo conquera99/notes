@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+import AuthSessionProvider from '@/components/auth/session-provider';
 import ProgressBar from '@/components/display/progress-bar';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -332,16 +333,18 @@ export default function RootLayout({
 				/>
 			</head>
 			<body className={nothingFont.className}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="light"
-					enableSystem={false}
-					disableTransitionOnChange
-				>
-					<ProgressBar>
-						<main className="min-h-screen">{children}</main>
-					</ProgressBar>
-				</ThemeProvider>
+				<AuthSessionProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="light"
+						enableSystem={false}
+						disableTransitionOnChange
+					>
+						<ProgressBar>
+							<main className="min-h-screen">{children}</main>
+						</ProgressBar>
+					</ThemeProvider>
+				</AuthSessionProvider>
 			</body>
 		</html>
 	);
