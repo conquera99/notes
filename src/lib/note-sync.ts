@@ -9,6 +9,7 @@ type RemoteNote = {
 	font: string;
 	createdAt: string;
 	updatedAt: string;
+	deletedAt: string | null;
 };
 
 type SyncSession = {
@@ -23,6 +24,8 @@ const toMillis = (value: string) => new Date(value).getTime();
 
 const isRemoteNewer = (remote: string, local: string) =>
 	toMillis(remote) > toMillis(local);
+
+const deletionValue = (value?: string | null) => value ?? null;
 
 const getSessionUserId = async () => {
 	const response = await fetch('/api/auth/session', {
@@ -121,7 +124,10 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 	const staleMappings = syncRows.filter((row) => !localById.has(row.localId));
 	const remoteDeleteIds = staleMappings
 		.map((row) => row.remoteId)
-		.filter((id) => remoteById.has(id));
+		.filter((id) => {
+			const remote = remoteById.get(id);
+			return Boolean(remote && !remote.deletedAt);
+		});
 
 	await removeRemoteNotes(remoteDeleteIds);
 	if (staleMappings.length > 0) {
@@ -132,20 +138,32 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 		);
 	}
 
-	// Push local notes to remote.
+	// Push local notes, including tombstones, to remote.
 	for (const localNote of localNotes) {
 		if (!localNote.id) continue;
 
 		const mapping = syncByLocalId.get(localNote.id);
 		const mappedRemote = mapping ? remoteById.get(mapping.remoteId) : undefined;
+
+		if (!mapping && localNote.deletedAt) {
+			continue;
+		}
+
+		const remoteIsNewer = mappedRemote
+			? isRemoteNewer(mappedRemote.updatedAt, localNote.updatedAt)
+			: false;
+		const hasDeletionMismatch = mappedRemote
+			? deletionValue(localNote.deletedAt) !== deletionValue(mappedRemote.deletedAt)
+			: false;
 		const needsUpload =
 			!mapping ||
 			!mappedRemote ||
-			mapping.localUpdatedAt !== localNote.updatedAt ||
-			(mapping.remoteUpdatedAt !== mappedRemote.updatedAt &&
-				isRemoteNewer(localNote.updatedAt, mappedRemote.updatedAt));
+			(!remoteIsNewer &&
+				(mapping.localUpdatedAt !== localNote.updatedAt ||
+					mapping.remoteUpdatedAt !== mappedRemote.updatedAt ||
+					hasDeletionMismatch));
 
-		if (!needsUpload) {
+		if (!needsUpload || remoteIsNewer) {
 			continue;
 		}
 
@@ -178,18 +196,23 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 		remoteById.set(remote.id, remote);
 	}
 
-	// Pull remote notes to local.
+	// Pull remote notes and tombstones to local.
 	for (const remote of remoteNotes) {
 		const mapping = syncByRemoteId.get(remote.id);
 		const now = dayjs().format(DATETIME_FORMAT);
 
 		if (!mapping) {
+			if (remote.deletedAt) {
+				continue;
+			}
+
 			const newLocalId = await db.notes.add({
 				title: remote.title,
 				content: remote.content,
 				font: remote.font,
 				createdAt: remote.createdAt,
 				updatedAt: remote.updatedAt,
+				deletedAt: remote.deletedAt,
 			});
 
 			await db.noteSyncState.add({
@@ -215,6 +238,7 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 				font: remote.font,
 				createdAt: remote.createdAt,
 				updatedAt: remote.updatedAt,
+				deletedAt: remote.deletedAt,
 			});
 
 			await db.noteSyncState.update(mapping.id!, {

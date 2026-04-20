@@ -1,6 +1,6 @@
 import Dexie, { Table } from 'dexie';
 
-const VERSION = 3;
+const VERSION = 4;
 
 export interface Notes {
 	id?: number;
@@ -9,6 +9,7 @@ export interface Notes {
 	font: string;
 	createdAt: string;
 	updatedAt: string;
+	deletedAt?: string | null;
 }
 
 export interface NoteSyncState {
@@ -30,8 +31,14 @@ export class DB extends Dexie {
 	constructor() {
 		super('notes');
 
-		this.version(VERSION).stores({
+		this.version(3).stores({
 			notes: '++id, title, content, font, createdAt, updatedAt', // Primary key and indexed props
+			noteSyncState:
+				'++id, [localId+userId], [remoteId+userId], localId, remoteId, userId, syncedAt',
+		});
+
+		this.version(VERSION).stores({
+			notes: '++id, title, content, font, createdAt, updatedAt, deletedAt',
 			noteSyncState:
 				'++id, [localId+userId], [remoteId+userId], localId, remoteId, userId, syncedAt',
 		});

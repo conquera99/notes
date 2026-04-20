@@ -12,11 +12,13 @@ const upsertSchema = z.object({
 		font: z.string(),
 		createdAt: z.string(),
 		updatedAt: z.string(),
+		deletedAt: z.string().nullable().optional(),
 	}),
 });
 
 const deleteSchema = z.object({
 	ids: z.array(z.number().int().positive()).min(1),
+	deletedAt: z.string().optional(),
 });
 
 const unauthorized = () =>
@@ -60,6 +62,7 @@ export async function POST(request: Request) {
 		font: payload.note.font,
 		createdAt: new Date(payload.note.createdAt),
 		updatedAt: new Date(payload.note.updatedAt),
+		deletedAt: payload.note.deletedAt ? new Date(payload.note.deletedAt) : null,
 		userId,
 	};
 
@@ -88,6 +91,7 @@ export async function POST(request: Request) {
 			...note,
 			createdAt: note.createdAt.toISOString(),
 			updatedAt: note.updatedAt.toISOString(),
+			deletedAt: note.deletedAt?.toISOString() ?? null,
 		},
 	});
 }
@@ -107,10 +111,16 @@ export async function DELETE(request: Request) {
 		return NextResponse.json({ message: 'Invalid payload' }, { status: 400 });
 	}
 
-	await prisma.notes.deleteMany({
+	const deletedAt = parsed.data.deletedAt ? new Date(parsed.data.deletedAt) : new Date();
+
+	await prisma.notes.updateMany({
 		where: {
 			id: { in: parsed.data.ids },
 			userId,
+		},
+		data: {
+			deletedAt,
+			updatedAt: deletedAt,
 		},
 	});
 

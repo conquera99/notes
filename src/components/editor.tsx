@@ -120,12 +120,15 @@ export default function Editor() {
 
 		try {
 			if (id) {
-				console.log('delete-data');
-				db.notes.delete(Number(id)).then((response) => {
-					console.log('data deleted', response);
-					toast.success('Notes deleted!');
-					router.push('/');
+				const deletedAt = dayjs().format(DATETIME_FORMAT);
+
+				await db.notes.update(Number(id), {
+					deletedAt,
+					updatedAt: deletedAt,
 				});
+
+				toast.success('Notes deleted!');
+				router.push('/');
 			}
 		} catch (error) {
 			console.log('remove-error', error);
@@ -150,6 +153,7 @@ export default function Editor() {
 						font: font,
 						createdAt: currentTimestamp,
 						updatedAt: currentTimestamp,
+						deletedAt: null,
 					})
 					.then((response) => {
 						console.log('data created', response);
@@ -164,6 +168,7 @@ export default function Editor() {
 						content: data,
 						font: font,
 						updatedAt: currentTimestamp,
+						deletedAt: null,
 					})
 					.then((response) => {
 						console.log(response);
