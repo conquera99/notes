@@ -7,24 +7,32 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint .",
+		"prisma:generate": "prisma generate",
+		"prisma:migrate": "prisma migrate dev",
+		"prisma:studio": "prisma studio",
 		"prettier": "prettier --write ./src/**/*.{ts,js,tsx,json}"
 	},
 	"dependencies": {
 		"@bprogress/next": "^3.2.12",
 		"@ckeditor/ckeditor5-react": "^11.1.2",
+		"@next-auth/prisma-adapter": "^1.0.7",
 		"@next/env": "^16.2.4",
+		"@prisma/client": "^6.18.0",
 		"@uidotdev/usehooks": "^2.4.1",
+		"bcryptjs": "^3.0.3",
 		"ckeditor5": "47.6.2",
 		"dayjs": "^1.11.20",
 		"dexie": "^4.4.2",
 		"dexie-react-hooks": "^4.4.0",
 		"next": "16.2.4",
+		"next-auth": "^4.24.14",
 		"next-themes": "^0.4.6",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
 		"react-select": "^5.10.2",
 		"react-toastify": "^11.1.0",
-		"tailwindcss": "4.2.2"
+		"tailwindcss": "4.2.2",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.2.2",
@@ -36,6 +44,7 @@
 		"eslint-config-prettier": "^10.1.8",
 		"postcss": "8.5.10",
 		"prettier": "^3.8.3",
+		"prisma": "^6.18.0",
 		"typescript": "5.9.3"
 	}
 }
