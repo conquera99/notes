@@ -24,10 +24,9 @@ import { editorConfig } from '@/lib/constant';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-const CKEditorClient = dynamic(
-	() => import('./ckeditor-client'),
-	{ ssr: false },
-);
+const CKEditorClient = dynamic(() => import('./ckeditor-client'), {
+	ssr: false,
+});
 
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -131,7 +130,7 @@ export default function Editor() {
 				router.push('/');
 			}
 		} catch (error) {
-			console.log('remove-error', error);
+			console.error('remove-error', error);
 			toast.error('Remove failed!');
 		}
 
@@ -145,7 +144,6 @@ export default function Editor() {
 			const currentTimestamp = dayjs().format(DATETIME_FORMAT);
 
 			if (!id) {
-				console.log('create-data');
 				db.notes
 					.add({
 						title: title,
@@ -156,12 +154,10 @@ export default function Editor() {
 						deletedAt: null,
 					})
 					.then((response) => {
-						console.log('data created', response);
 						toast.success('Notes saved!');
 						router.replace(`/notes?id=${response}`);
 					});
 			} else {
-				console.log('update-data', id);
 				db.notes
 					.update(Number(id), {
 						title,
@@ -171,14 +167,11 @@ export default function Editor() {
 						deletedAt: null,
 					})
 					.then((response) => {
-						console.log(response);
-						if (response) console.log('updated data', id);
-						else console.log('no data updated');
+						if (response) toast.success('Notes saved!');
 					});
-				toast.success('Notes saved!');
 			}
 		} catch (error) {
-			console.log('save-error', error);
+			console.error('save-error', error);
 			toast.error('Save failed!');
 		}
 
@@ -310,18 +303,22 @@ export default function Editor() {
 					</button>
 				</div>
 			</Header>
-			<div className={`mx-3 mt-4 rounded-2xl border border-(--surface-border) bg-(--surface) p-3 sm:mx-4 sm:p-6 ${font}`}>
-				<input
-					value={title}
-					onChange={onTitleChange}
-					placeholder="Write your title"
-					className="w-full border-b border-(--surface-border) bg-transparent py-3 text-xl font-semibold focus:outline-none sm:text-2xl"
-				/>
-				<CKEditorClient
-					data={data}
-					config={editorConfig}
-					onChange={onTextEditorChange}
-				/>
+			<div className="w-full mt-4">
+				<div
+					className={`mx-auto rounded-2xl max-w-5xl border border-(--surface-border) bg-(--surface) p-3 sm:p-6 ${font}`}
+				>
+					<input
+						value={title}
+						onChange={onTitleChange}
+						placeholder="Write your title"
+						className="w-full border-b border-(--surface-border) bg-transparent py-3 text-xl font-semibold focus:outline-none sm:text-2xl"
+					/>
+					<CKEditorClient
+						data={data}
+						config={editorConfig}
+						onChange={onTextEditorChange}
+					/>
+				</div>
 			</div>
 			<ToastContainer position="top-center" />
 		</div>

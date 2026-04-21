@@ -32,7 +32,7 @@ export default function Footer({ status }: { status?: ReactNode }) {
 
 	return (
 		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-(--surface-border) bg-(--surface)/95 text-sm backdrop-blur-md">
-			<div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+			<div className="mx-auto flex w-full max-w-5xl gap-2 px-4 py-2 flex-row sm:items-center sm:justify-between">
 				<div className="w-full text-xs leading-5 text-(--muted) sm:text-sm">
 				Usage&nbsp;
 				{formatNumber(
@@ -44,7 +44,7 @@ export default function Footer({ status }: { status?: ReactNode }) {
 				)}
 				&nbsp;MB; &nbsp;Status: <span className="text-(--foreground)">{status ?? '-'}</span>
 				</div>
-				<div className="flex w-full items-center justify-between gap-3 text-xs text-(--muted) sm:w-auto sm:justify-end sm:text-sm">
+				<div className="flex w-full items-center gap-3 text-xs text-(--muted) sm:w-auto justify-end sm:text-sm">
 					<span className="hidden sm:inline">{size.width}x{size.height}</span>
 					<button
 						type="button"
