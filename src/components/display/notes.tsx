@@ -29,17 +29,26 @@ export function Notes({ loading }: { loading?: boolean }) {
 		);
 	}
 
+	const offlineReadyCount = notes?.length ?? 0;
+	const offlineLabel = offlineReadyCount === 1 ? 'note' : 'notes';
+
 	return (
-		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{notes?.map((note) => (
-				<Card
-					id={note.id}
-					key={note.id}
-					title={note.title}
-					content={note.content}
-					datetime={note.updatedAt}
-				/>
-			))}
-		</div>
+		<>
+			<div className="mb-3 rounded-xl border border-(--surface-border) bg-(--surface) px-3 py-2 text-sm text-(--muted)">
+				Offline access: {offlineReadyCount} {offlineLabel} can be opened without internet.
+			</div>
+			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				{notes?.map((note) => (
+					<Card
+						id={note.id}
+						key={note.id}
+						title={note.title}
+						content={note.content}
+						datetime={note.updatedAt}
+						offlineReady
+					/>
+				))}
+			</div>
+		</>
 	);
 }
