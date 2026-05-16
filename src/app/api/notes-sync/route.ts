@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 const upsertSchema = z.object({
 	remoteId: z.number().int().positive().optional(),
 	note: z.object({
+		clientId: z.string().min(1),
 		title: z.string(),
 		content: z.string(),
 		font: z.string(),
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
 
 	const payload = parsed.data;
 	const noteData = {
+		clientId: payload.note.clientId,
 		title: payload.note.title,
 		content: payload.note.content,
 		font: payload.note.font,
@@ -81,9 +83,27 @@ export async function POST(request: Request) {
 					where: { id: existing.id },
 					data: noteData,
 				})
-			: await prisma.notes.create({ data: noteData });
+			: await prisma.notes.upsert({
+					where: {
+						userId_clientId: {
+							userId,
+							clientId: noteData.clientId,
+						},
+					},
+					update: noteData,
+					create: noteData,
+				});
 	} else {
-		note = await prisma.notes.create({ data: noteData });
+		note = await prisma.notes.upsert({
+			where: {
+				userId_clientId: {
+					userId,
+					clientId: noteData.clientId,
+				},
+			},
+			update: noteData,
+			create: noteData,
+		});
 	}
 
 	return NextResponse.json({

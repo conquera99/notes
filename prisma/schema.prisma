@@ -64,6 +64,7 @@ model VerificationToken {
 model Notes {
 	id        Int      @id @default(autoincrement())
 	userId    String   @map("user_id")
+	clientId  String   @map("client_id")
 	title     String
 	content   String   @db.LongText
 	font      String
@@ -75,6 +76,7 @@ model Notes {
 
 	@@index([userId, updatedAt])
 	@@index([userId, deletedAt])
+	@@unique([userId, clientId])
 
 	@@map("notes")
 }

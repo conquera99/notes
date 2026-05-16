@@ -1,9 +1,8 @@
-import dayjs from 'dayjs';
-
 import { db, type NoteSyncState, type Notes } from '@/lib/db';
 
 type RemoteNote = {
 	id: number;
+	clientId: string;
 	title: string;
 	content: string;
 	font: string;
@@ -18,9 +17,26 @@ type SyncSession = {
 	};
 };
 
-const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+let activeSync: Promise<string> | null = null;
 
-const toMillis = (value: string) => new Date(value).getTime();
+const createClientId = () =>
+	typeof crypto !== 'undefined' && 'randomUUID' in crypto
+		? crypto.randomUUID()
+		: `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+const toMillis = (value: string) => {
+	const direct = Date.parse(value);
+	if (!Number.isNaN(direct)) {
+		return direct;
+	}
+
+	// Legacy local values may look like "YYYY-MM-DD HH:mm:ss" without timezone.
+	const normalized = value.replace(' ', 'T');
+	const withTimezone = /z$/i.test(normalized) ? normalized : `${normalized}Z`;
+	const fallback = Date.parse(withTimezone);
+
+	return Number.isNaN(fallback) ? 0 : fallback;
+};
 
 const isRemoteNewer = (remote: string, local: string) =>
 	toMillis(remote) > toMillis(local);
@@ -93,7 +109,7 @@ const removeRemoteNotes = async (ids: number[]) => {
 	}
 };
 
-export async function syncLocalNotesIfPossible(): Promise<string> {
+const runSyncLocalNotesIfPossible = async (): Promise<string> => {
 	if (typeof window === 'undefined') {
 		return 'ready';
 	}
@@ -112,7 +128,17 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 	}
 
 	const localNotes = await db.notes.toArray();
+
+	for (const note of localNotes) {
+		if (note.id && !note.clientId) {
+			const clientId = createClientId();
+			await db.notes.update(note.id, { clientId });
+			note.clientId = clientId;
+		}
+	}
+
 	const localById = new Map(localNotes.map((note) => [note.id!, note]));
+	const localByClientId = new Map(localNotes.map((note) => [note.clientId, note]));
 	const syncRows = await db.noteSyncState.where('userId').equals(userId).toArray();
 
 	const { notes: remoteNotes } = await getRemoteNotes();
@@ -172,7 +198,7 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 			note: localNote,
 		});
 		const remote = result.note;
-		const now = dayjs().format(DATETIME_FORMAT);
+		const now = new Date().toISOString();
 
 		const syncPayload: NoteSyncState = {
 			localId: localNote.id,
@@ -199,14 +225,42 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 	// Pull remote notes and tombstones to local.
 	for (const remote of remoteNotes) {
 		const mapping = syncByRemoteId.get(remote.id);
-		const now = dayjs().format(DATETIME_FORMAT);
+		const now = new Date().toISOString();
 
 		if (!mapping) {
+			const localByClient = localByClientId.get(remote.clientId);
+			if (localByClient?.id) {
+				const now = new Date().toISOString();
+
+				if (isRemoteNewer(remote.updatedAt, localByClient.updatedAt)) {
+					await db.notes.update(localByClient.id, {
+						title: remote.title,
+						content: remote.content,
+						font: remote.font,
+						createdAt: remote.createdAt,
+						updatedAt: remote.updatedAt,
+						deletedAt: remote.deletedAt,
+						clientId: remote.clientId,
+					});
+				}
+
+				await db.noteSyncState.add({
+					localId: localByClient.id,
+					remoteId: remote.id,
+					userId,
+					localUpdatedAt: remote.updatedAt,
+					remoteUpdatedAt: remote.updatedAt,
+					syncedAt: now,
+				});
+				continue;
+			}
+
 			if (remote.deletedAt) {
 				continue;
 			}
 
 			const newLocalId = await db.notes.add({
+				clientId: remote.clientId,
 				title: remote.title,
 				content: remote.content,
 				font: remote.font,
@@ -233,6 +287,7 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 
 		if (isRemoteNewer(remote.updatedAt, local.updatedAt)) {
 			await db.notes.update(mapping.localId, {
+				clientId: remote.clientId,
 				title: remote.title,
 				content: remote.content,
 				font: remote.font,
@@ -250,4 +305,16 @@ export async function syncLocalNotesIfPossible(): Promise<string> {
 	}
 
 	return 'Synced';
+};
+
+export async function syncLocalNotesIfPossible(): Promise<string> {
+	if (activeSync) {
+		return activeSync;
+	}
+
+	activeSync = runSyncLocalNotesIfPossible().finally(() => {
+		activeSync = null;
+	});
+
+	return activeSync;
 }

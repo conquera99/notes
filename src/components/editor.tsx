@@ -28,7 +28,10 @@ const CKEditorClient = dynamic(() => import('./ckeditor-client'), {
 	ssr: false,
 });
 
-const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const createClientId = () =>
+	typeof crypto !== 'undefined' && 'randomUUID' in crypto
+		? crypto.randomUUID()
+		: `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const LongChangFont = Long_Cang({
 	subsets: ['latin'],
@@ -91,6 +94,12 @@ export default function Editor() {
 		if (id) {
 			const note = await db.notes.get(Number(id));
 
+			if (note?.deletedAt) {
+				toast.error('This note has been deleted.');
+				router.replace('/');
+				return null;
+			}
+
 			setTitle(note?.title || '');
 			setData(note?.content || '');
 			setFont(note?.font || '');
@@ -119,7 +128,7 @@ export default function Editor() {
 
 		try {
 			if (id) {
-				const deletedAt = dayjs().format(DATETIME_FORMAT);
+				const deletedAt = dayjs().toISOString();
 
 				await db.notes.update(Number(id), {
 					deletedAt,
@@ -141,34 +150,37 @@ export default function Editor() {
 		setLoading(true);
 
 		try {
-			const currentTimestamp = dayjs().format(DATETIME_FORMAT);
+			const currentTimestamp = dayjs().toISOString();
 
 			if (!id) {
-				db.notes
-					.add({
-						title: title,
-						content: data,
-						font: font,
-						createdAt: currentTimestamp,
-						updatedAt: currentTimestamp,
-						deletedAt: null,
-					})
-					.then((response) => {
-						toast.success('Notes saved!');
-						router.replace(`/notes?id=${response}`);
-					});
+				const response = await db.notes.add({
+					clientId: createClientId(),
+					title: title,
+					content: data,
+					font: font,
+					createdAt: currentTimestamp,
+					updatedAt: currentTimestamp,
+					deletedAt: null,
+				});
+
+				toast.success('Notes saved!');
+				router.replace(`/notes?id=${response}`);
 			} else {
-				db.notes
-					.update(Number(id), {
-						title,
-						content: data,
-						font: font,
-						updatedAt: currentTimestamp,
-						deletedAt: null,
-					})
-					.then((response) => {
-						if (response) toast.success('Notes saved!');
-					});
+				const existingNote = await db.notes.get(Number(id));
+				if (existingNote?.deletedAt) {
+					toast.error('Cannot save a deleted note.');
+					return;
+				}
+
+				const response = await db.notes.update(Number(id), {
+					title,
+					content: data,
+					font: font,
+					updatedAt: currentTimestamp,
+					deletedAt: null,
+				});
+
+				if (response) toast.success('Notes saved!');
 			}
 		} catch (error) {
 			console.error('save-error', error);

@@ -1,9 +1,10 @@
 import Dexie, { Table } from 'dexie';
 
-const VERSION = 4;
+const VERSION = 5;
 
 export interface Notes {
 	id?: number;
+	clientId: string;
 	title: string;
 	content: string;
 	font: string;
@@ -37,11 +38,25 @@ export class DB extends Dexie {
 				'++id, [localId+userId], [remoteId+userId], localId, remoteId, userId, syncedAt',
 		});
 
-		this.version(VERSION).stores({
-			notes: '++id, title, content, font, createdAt, updatedAt, deletedAt',
-			noteSyncState:
-				'++id, [localId+userId], [remoteId+userId], localId, remoteId, userId, syncedAt',
-		});
+		this.version(VERSION)
+			.stores({
+				notes: '++id, clientId, title, content, font, createdAt, updatedAt, deletedAt',
+				noteSyncState:
+					'++id, [localId+userId], [remoteId+userId], localId, remoteId, userId, syncedAt',
+			})
+			.upgrade(async (tx) => {
+				await tx
+					.table('notes')
+					.toCollection()
+					.modify((note: Notes) => {
+						if (!note.clientId) {
+							note.clientId =
+								typeof crypto !== 'undefined' && 'randomUUID' in crypto
+									? crypto.randomUUID()
+									: `legacy-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+						}
+					});
+			});
 	}
 }
 
